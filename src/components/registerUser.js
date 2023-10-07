@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { auth, db } from './firebase';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+const auth = getAuth();
+const db = getFirestore();
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -18,11 +22,11 @@ function Register() {
         setRegistering(true);
 
         try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const userId = userCredential.user.uid;
 
             // Set user metadata in Firestore
-            await db.collection('users').doc(userId).set({
+            await setDoc(doc(db, 'users', userId), {
                 isPremium: isPremium
             });
 

@@ -1,11 +1,11 @@
 import { HashtagIcon } from "@heroicons/react/outline";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setChannelInfo } from "../features/channelSlice";
 
 function Channel({ id, channelName }) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const setChannel = () => {
     dispatch(
@@ -15,7 +15,7 @@ function Channel({ id, channelName }) {
       })
     );
 
-    history.push(`/channels/${id}`);
+    navigate(`/channels/${id}`);
   };
 
   return (

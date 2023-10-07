@@ -3,7 +3,11 @@ import moment from "moment";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useSelector } from "react-redux";
 import { selectChannelId } from "../features/channelSlice";
-import { auth, db } from "../firebase";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, deleteDoc } from "firebase/firestore";
+
+const auth = getAuth();
+const db = getFirestore();
 
 function Message({ id, message, timestamp, name, email, photoURL }) {
   const channelId = useSelector(selectChannelId);
@@ -30,13 +34,8 @@ function Message({ id, message, timestamp, name, email, photoURL }) {
       {user?.email === email && (
         <div
           className=" hover:bg-[#ed4245] p-1 ml-auto rounded-sm text-[#ed4245] hover:text-white cursor-pointer"
-          onClick={() =>
-            db
-              .collection("channels")
-              .doc(channelId)
-              .collection("messages")
-              .doc(id)
-              .delete()
+          onClick={async () =>
+            await deleteDoc(doc(db, "channels", channelId, "messages", id))
           }
         >
           <TrashIcon className="h-5 hidden group-hover:inline" />

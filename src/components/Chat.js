@@ -11,12 +11,15 @@ import {
 } from "@heroicons/react/solid";
 import { useSelector } from "react-redux";
 import { selectChannelId, selectChannelName } from "../features/channelSlice";
-import { auth, db } from "../firebase";
-import Message from "./Message";
-import firebase from "firebase";
-import {  useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useRef } from "react";
+import Message from "./Message";
+
+const auth = getAuth();
+const db = getFirestore();
 
 function Chat() {
   const channelId = useSelector(selectChannelId);
@@ -44,8 +47,8 @@ function Chat() {
     e.preventDefault();
 
     if (inputRef.current.value !== "") {
-      db.collection("channels").doc(channelId).collection("messages").add({
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      addDoc(collection(db, "channels", channelId, "messages"), {
+        timestamp: serverTimestamp(),
         message: inputRef.current.value,
         name: user?.displayName,
         photoURL: user?.photoURL,

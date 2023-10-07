@@ -2,29 +2,41 @@ import { ChevronDownIcon, PlusIcon } from "@heroicons/react/outline";
 import { MicrophoneIcon, PhoneIcon, CogIcon } from "@heroicons/react/solid";
 import Channel from "../components/Channel";
 import ServerIcon from "../components/ServerIcon";
-import Chat from "../components/Chat";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../firebase";
-import { Redirect } from "react-router-dom";
 import { useCollection } from "react-firebase-hooks/firestore";
+import { getAuth, signOut } from "firebase/auth";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import Chat from "./Chat";
+
+const auth = getAuth();
+const db = getFirestore();
 
 function Home() {
   const [user] = useAuthState(auth);
-  const [channels] = useCollection(db.collection("channels"));
+  const [channels] = useCollection(collection(db, "channels"));
+  const navigate = useNavigate();
 
   const handleAddChannel = () => {
     const channelName = prompt("Enter a new channel name");
 
     if (channelName) {
-      db.collection("channels").add({
+      addDoc(collection(db, "channels"), {
         channelName: channelName,
       });
     }
   };
 
+  useEffect(() => {
+    if (!user) {
+        navigate("/");
+    }
+}, [user, navigate]);
+
+
   return (
     <>
-      {!user && <Redirect exact to="/" />}
       <div className="flex h-screen">
         <div className="flex flex-col space-y-3 bg-[#202225] p-3 min-w-max">
           <div className="server-default hover:bg-discord_purple">
@@ -70,7 +82,11 @@ function Home() {
                 src={user?.photoURL}
                 alt=""
                 className="h-10 rounded-full"
-                onClick={() => auth.signOut()}
+                onClick={() => signOut(auth).then(() =>{
+                  navigate("/");
+                }).catch((error) => {
+                  //add toast later
+                })}
               />
               <h4 className="text-white text-xs font-medium">
                 {user?.displayName}{" "}
