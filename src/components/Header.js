@@ -24,7 +24,7 @@ function Header() {
     <header className="bg-discord_blue flex items-center justify-between py-4 px-6">
       <a href="/">
         <img
-          src="https://rb.gy/it5msp"
+          src="https://media.istockphoto.com/id/1372401945/photo/modern-black-picture-or-square-photo-frame-isolated.webp?b=1&s=170667a&w=0&k=20&c=bmXOZlLuoGDq9RtS64i1JWl8nz1lKg-2hVE1SRT8I8E="
           className="w-32 h-12 object-contain"
           alt=""
         />
