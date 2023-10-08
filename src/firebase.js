@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
@@ -12,7 +12,13 @@ const firebaseConfig = {
   measurementId: "G-J9L9ETGMQP"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+let firebaseApp;
+
+if (!getApps().length) {
+  initializeApp(firebaseConfig);
+}else {
+  firebaseApp = getApps()[0];
+}
 
 const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);

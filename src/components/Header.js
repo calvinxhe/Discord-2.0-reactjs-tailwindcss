@@ -1,3 +1,4 @@
+import "../firebase"
 import { MenuIcon } from "@heroicons/react/outline";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
