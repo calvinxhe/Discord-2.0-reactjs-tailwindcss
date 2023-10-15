@@ -84,7 +84,6 @@ function ShoppingCart() {
             </div>
         </div>
     );
-    );
 }
 
 export default ShoppingCart;

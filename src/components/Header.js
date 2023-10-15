@@ -1,10 +1,10 @@
-import "../firebase"
+import { auth, provider, db } from '../firebase';
 import { MenuIcon } from "@heroicons/react/outline";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { doc, getDoc, setDoc } from '@firebase/firestore';
+import { Link } from 'react-router-dom';
 
-const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
 function Header() {
