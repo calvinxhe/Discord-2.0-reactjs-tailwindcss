@@ -36,7 +36,7 @@ function Hero() {
             className="absolute -left-36 mt-16 sm:-left-44 md:hidden"
           />
           <img
-            src="https://www.kidsmathgamesonline.com/images/pictures/shapes/triangle.jpg"
+            src="https://img.freepik.com/free-photo/abstract-luxury-gradient-blue-background-smooth-dark-blue-with-black-vignette-studio-banner_1258-52379.jpg"
             alt=""
             className="hidden md:inline absolute"
           />

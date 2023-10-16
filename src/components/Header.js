@@ -1,26 +1,22 @@
-import { auth, provider, db } from '../firebase';
+import { auth } from '../firebase';
+import React, { useState } from 'react';
+import SignInOverlay from './signInOverlay';
 import { MenuIcon } from "@heroicons/react/outline";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-import { doc, getDoc, setDoc } from '@firebase/firestore';
-import { Link } from 'react-router-dom';
-
-const provider = new GoogleAuthProvider();
 
 function Header() {
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
+  const [showSignInOverlay, setShowSignInOverlay] = useState(false);
 
   const signIn = (e) => {
     e.preventDefault();
-
-    auth
-      .signInWithPopup(provider)
-      .then(() => navigate("/channels"))
-      .catch((error) => alert(error.message));
+    setShowSignInOverlay(true);
   };
 
   return (
+    <div>
     <header className="bg-discord_blue flex items-center justify-between py-4 px-6">
       <a href="/">
         <img
@@ -46,6 +42,8 @@ function Header() {
         <MenuIcon className="h-9 text-white cursor-pointer lg:hidden" />
       </div>
     </header>
+    {showSignInOverlay && <SignInOverlay onClose={() => setShowSignInOverlay(false)} />} 
+  </div>
   );
 }
 
