@@ -1,5 +1,6 @@
 import { HashtagIcon, SearchIcon } from "@heroicons/react/outline";
 import {
+  ShoppingCartIcon,
   BellIcon,
   ChatIcon,
   UsersIcon,
@@ -14,9 +15,16 @@ import { selectChannelId, selectChannelName } from "../features/channelSlice";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { useRef } from "react";
+import {
+  getFirestore,
+  doc,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import React, { useEffect, useRef, useState } from "react";
 import Message from "./Message";
+
 
 const auth = getAuth();
 const db = getFirestore();
@@ -25,16 +33,35 @@ function Chat() {
   const channelId = useSelector(selectChannelId);
   const channelName = useSelector(selectChannelName);
   const [user] = useAuthState(auth);
+  const [showUploadOptions, setShowUploadOptions] = useState(false);
   const inputRef = useRef("");
   const chatRef = useRef(null);
+  const uploadOptionsRef = useRef(null);
+  const PlusCircleIconRef = useRef(null);
   const [messages] = useCollection(
     channelId &&
       db
         .collection("channels")
         .doc(channelId)
         .collection("messages")
-        .orderBy("timestamp", "asc")
+        .orderBy("timestamp", "asc"),
   );
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showUploadOptions &&
+        !uploadOptionsRef.current.contains(event.target) &&
+        !PlusCircleIconRef.current.contains(event.target)
+      ) {
+        setShowUploadOptions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUploadOptions]);
 
   const scrollToBottom = () => {
     chatRef.current.scrollIntoView({
@@ -59,6 +86,9 @@ function Chat() {
     inputRef.current.value = "";
     scrollToBottom();
   };
+  const toggleUpload = () => {
+    setShowUploadOptions(!showUploadOptions);
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -71,6 +101,7 @@ function Chat() {
           <BellIcon className="icon" />
           <ChatIcon className="icon" />
           <UsersIcon className="icon" />
+          <ShoppingCartIcon className="icon" />
           <div className="flex bg-[#202225] text-xs p-1 rounded-md">
             <input
               type="text"
@@ -101,8 +132,21 @@ function Chat() {
         })}
         <div ref={chatRef} className="pb-16" />
       </main>
-      <div className="flex items-center p-2.5 bg-[#40444b] mx-5 mb-7 rounded-lg">
-        <PlusCircleIcon className="icon mr-4" />
+      <div className="relative flex items-center p-2.5 bg-[#40444b] mx-5 mb-7 rounded-lg">
+        <PlusCircleIcon
+          className="icon mr-4"
+          onClick={toggleUpload}
+          ref={PlusCircleIconRef}
+        />
+        {showUploadOptions && (
+          <div
+            className="absolute bottom-full left-0 bg-white p-4 rounded-lg shadow-md w-1/4"
+            ref={uploadOptionsRef}
+          >
+            <button className="block mb-2 text-left">Upload Image</button>
+            <button className="block text-left">Upload Video</button>
+          </div>
+        )}
         <form className="flex-grow">
           <input
             type="text"
